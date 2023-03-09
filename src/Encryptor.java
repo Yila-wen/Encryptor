@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Encryptor
 {
     /** A two-dimensional array of single-character strings, instantiated in the constructor */
@@ -69,44 +71,32 @@ public class Encryptor
      *
      *  @return the encrypted message; if message is the empty string, returns the empty string
      */
-    public String encryptMessage(String message)
-    {
-        if (message.equals("")){return message;}
+    public String encryptMessage(String message) {
+        if (message.equals("")) {
+            return message;
+        }
         fillBlock(message);
 
         String eM = "";
-        int i =0;
+        String tempMsg = message;
+        int i = 0;
         String segment = "";
-        while (i < message.length()){
-            segment += String.valueOf(message.charAt(i));
+        while (i < tempMsg.length()) {
+            segment += String.valueOf(tempMsg.charAt(i));
+            i++;
 
-            if (i++ == message.length()){
+            if (i == tempMsg.length()){
                 fillBlock(segment);
+                eM += encryptBlock();
             }
-            else if(segment.length()/6 == 0){
+
+            else if ((segment.length())%(numCols*numRows) == 0){
                 fillBlock(segment);
                 eM += encryptBlock();
                 segment = "";
             }
+
         }
-
-
-
-
-        String eM = "";
-        int l = message.length()/(numCols*numRows);
-        message += " ";
-        String extra = message.substring((numCols*numRows*l+1));
-        message = message.substring(0,numCols*numRows*l+1);
-
-        for (int i =0; i<l;i++){
-            eM+=  encryptBlock();
-
-            fillBlock(message.substring(6*(i+1)));
-        }
-        fillBlock(extra);
-        eM += encryptBlock();
-
 
         return eM;
     }
@@ -135,33 +125,51 @@ public class Encryptor
      */
     public String decryptMessage(String encryptedMessage)
     {
-        int index = 0;
-        for (int c =0;c<numCols;c++){
-            for (int r=0;r<numRows;r++){
-                if (index++ < encryptedMessage.length()){
-                    letterBlock[r][c] = String.valueOf(encryptedMessage.charAt(index));
-                    index++;
+        String str = "";
+        int i = 0;
+
+        while (i < encryptedMessage.length()) {
+
+
+            for (int c = 0; c < numCols; c++) {
+                for (int r = 0; r < numRows; r++) {
+                    letterBlock[r][c] = String.valueOf(encryptedMessage.charAt(i));
+                    i++;
+                    if (i == encryptedMessage.length()){
+                        r= numRows;
+                        c=numCols;
+                    }
+                }
+            }
+
+            for (int r = 0; r < numRows; r++) {
+                for (int c = 0; c < numCols; c++) {
+                    str += letterBlock[r][c];
                 }
             }
         }
 
-        String str = "";
-        for (int r=0;r<numRows;r++){
-            for (int c=0;c<numCols;c++){
-                str += letterBlock[r][c];
-            }
-        }
-        return removeDupeA(str);
 
+
+        return removeDupeA(str);
     }
 
     private String removeDupeA(String eM){
-        eM += "  ";
-        for (int i =eM.length()-1; i>-1;i-=2){
-            if (String.valueOf(eM.charAt(i)).equals("A")){
-                eM = eM.substring(0,i) + eM.substring(i+1);
+        String curr = "";
+        String next = "";
+
+        for (int i =eM.length()-1;i>-1;i--){
+
+            curr = String.valueOf(eM.charAt(i));
+            next = String.valueOf(i-1);
+
+            if (curr.equals("A")){
+                eM = eM.substring(0,i);
             }
+            else if (!curr.equals(next))
+            {i = -2;}
         }
+
         return eM;
     }
 
