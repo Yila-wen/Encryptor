@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Encryptor
 {
@@ -154,7 +155,79 @@ public class Encryptor
         return removeDupeA(str);
     }
 
-    private String removeDupeA(String eM){
+    public String superEncryptor(String msg){
+        String lMsg = "";
+
+        String fMsg = encryptMessage(msg);
+
+        for (int i =0;i<fMsg.length();i++){
+            int temp = alphabetNumValue(String.valueOf(fMsg.charAt(i)));
+            if (temp == 0){lMsg += " 0";}
+            else if (temp != -1){
+                lMsg += temp;
+            }
+            else lMsg+=String.valueOf(fMsg.charAt(i));
+        }
+        return lMsg;
+    }
+
+    public String superDecrypter(String msg){
+        String fMsg = "";
+        for (int i = 0;i<fMsg.length();i++){
+            fMsg += numValueAlphabet(String.valueOf(fMsg.charAt(i)));
+        }
+
+
+     return fMsg;
+    }
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    private static int alphabetNumValue(String letter){
+        final String[] ALPHABET = {
+                " ","a","b","c","d","e","f","g","h","i",
+                "j","k","l","m","n","o","p","q","r",
+                "s","t","u","v","w","x","y","z",
+                "A","B","C","D","E","F","G","H","I",
+                "J","K","L","M","N","O","P","Q","R",
+                "S","T","U","V","W","X","Y","Z"
+        };
+        for (int i=0;i< ALPHABET.length;i++){
+            if (letter.equals(ALPHABET[i])){
+                return i;
+            }
+        }
+
+        return -1;
+    }
+    private static String numValueAlphabet(String x){
+        final String[] ALPHABET = {
+                " ","a","b","c","d","e","f","g","h","i",
+                "j","k","l","m","n","o","p","q","r",
+                "s","t","u","v","w","x","y","z",
+                "A","B","C","D","E","F","G","H","I",
+                "J","K","L","M","N","O","P","Q","R",
+                "S","T","U","V","W","X","Y","Z"
+        };
+        if(isNumeric(x));{
+        if (Integer.parseInt(x) > -1 && Integer.parseInt(x) < ALPHABET.length){
+            return ALPHABET[Integer.parseInt(x)];
+        }
+        }
+        return x;
+    }
+
+
+    public static String removeDupeA(String eM){
         String curr = "";
         String next = "";
 
